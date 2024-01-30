@@ -6,15 +6,20 @@ let ifItsJoined = false;
 const userStates = new Map();
 const channelUsername = '@chatterprotein';
 const channelUsername2 = '@ProteinTeam';
-const joined = ['عضو شدم', 'i joined'];
-let mainMenu = ['منو اصلی', 'main menu'];
-let translator = ['ترجمه میکنم برات تو فقط بهم ویس بده به هر زبونی که میخوای و زبان مقصدت و انتخاب کن', 'translate with audio in any language'];
-let userProfile = ['حساب کاربری شما📖✏️', 'your profile 📖✏️'];
-let aboutUs = ['درباره ما', 'about us'];
+const joined = ['عضو شدم', 'i joined', 'عضو شدم | i joined'];
+let mainMenu = ['منو اصلی', 'main menu', 'منو اصلی | main menu'];
+let guide = "متن مورد نظر خود را به هر زبانی که مسلط هستید به صورت صوتی بیان کنید | speak what you want to translate in any language you want"
+let translator = ['ترجمه میکنم برات تو فقط بهم ویس بده به هر زبونی که میخوای و زبان مقصدت و انتخاب کن', 'translate with audio in any language', "ترجمه صوتی به صوتی | translate audio to audio"];
+let userProfile = ['حساب کاربری شما📖✏️', 'your profile 📖✏️', 'حساب کاربری شما📖✏️ | your profile 📖✏'];
+let aboutUs = ['درباره ما', 'about us', 'درباره ما | about us'];
+let destinationLanguage = ['English', 'Spanish', 'Italian', 'German', 'Persian', 'Arabic', 'Chinese', 'Japanese', 'Korean', 'French', 'Hindi'];
+let continueTranslating = "ادامه ترجمه | continue translating"
+let askToContinue = "آیا میخواهید ترجمه ادامه پیدا کند ؟ | do you want to continue translating "
+let wrongOption = "لطفا گزینه مورد نظر خود را برای کار با ربات از داخل منو انتخاب کنید | please choose the right option in the menu";
 const FormData = require('form-data');
 const fs = require('fs');
 const path = require('path');
-let promoteUs = ["با معرفی ما به دوستان خود از ما حمایت کنید .", 'share our robot with your friend'];
+let promoteUs = ["با معرفی ما به دوستان خود از ما حمایت کنید .", 'share our robot with your friend', 'با معرفی ما به دوستان خود از ما حمایت کنید | share us with your friend'];
 let channelJoin = `لطفا ابتدا عضو کانال‌های ${channelUsername} و ${channelUsername2} شوید.`;
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
@@ -32,14 +37,15 @@ bot.on('message', async (msg) => {
             isRequestingChangingTone: false,
             isCompletingProfile: false,
             isInvitingFriend: false,
-            lastText: ""
+            lastText: "",
+            preferLanguage: ""
         };
         userStates.set(chatId, userState);
     }
 
-
     if (userState.isRequestingTranslate) {
         if (msg.voice) {
+            console.log(userState.lastText);
             console.log("this is here its a voice");
             const fileId = msg.voice.file_id;
             bot.getFile(fileId).then(async (file) => {
@@ -63,35 +69,74 @@ bot.on('message', async (msg) => {
 
                         // Prepare form data
                         const formData = new FormData();
+                        let destLang = userState.lastText
                         formData.append('file', fs.createReadStream(tempFilePath));
                         formData.append('idChat', msg.chat.id.toString());
-                        formData.append('destination', 'English');
+                        formData.append('destination', destLang + "");
 
                         // Send the file to your server
                         axios.post('http://localhost:3000/audioToAnyTest', formData, {
                             headers: formData.getHeaders()
                         })
                             .then((res) => {
-                                console.log('File sent to server:', res.data);
+                                console.log('File sent to server:', res.data.path);
                                 // Remove the temporary file
                                 fs.unlinkSync(tempFilePath);
-                                const localFilePath = '/Users/erfanesfahanian/Desktop/neural\ network/gpt4/my-gpt4-app/englishVoice/584379734.mp3'
-
+                                const localFilePath = res.data.path + '/' + chatId + '.mp3'
+                                console.log(chatId);
                                 // Send the MP3 file as an audio message
-                                bot.sendAudio(chatId, localFilePath);
+                                // bot.sendAudio(chatId, localFilePath);
+                                // bot.sendMessage(chatId, res.data.messages);
+                                // bot.sendMessage(chatId, res.data.translate);
+                                // bot.sendMessage(chatId, askToContinue, {
+                                //     reply_markup: {
+                                //         keyboard: [
+                                //             [{text: continueTranslating}],
+                                //             [{text: mainMenu[2]}],
+                                //         ],
+                                //         resize_keyboard: true,
+                                //         one_time_keyboard: true
+                                //     }
+                                // });
+                                bot.sendAudio(chatId, localFilePath)
+                                    .then(() => {
+                                        return bot.sendMessage(chatId, res.data.messages);
+                                    })
+                                    .then(() => {
+                                        return bot.sendMessage(chatId, res.data.translate);
+                                    })
+                                    .then(() => {
+                                        return bot.sendMessage(chatId, askToContinue, {
+                                            reply_markup: {
+                                                keyboard: [
+                                                    [{ text: continueTranslating }],
+                                                    [{ text: mainMenu[2] }],
+                                                ],
+                                                resize_keyboard: true,
+                                                one_time_keyboard: true
+                                            }
+                                        });
+                                    })
                             })
                             .catch((error) => {
                                 console.error('Error sending file to server:', error);
                                 // Remove the temporary file
                                 fs.unlinkSync(tempFilePath);
                             });
+
                     });
                 } catch (error) {
                     console.error('Error downloading file:', error);
                 }
             });
         }
-        userStates.set(chatId, {isRequestingTranslate: false});
+        userStates.set(chatId, {isRequestingTranslate: false, lastText: userState.lastText});
+    } else if (msg.voice) {
+        await bot.sendMessage(chatId, wrongOption);
+        await sendCustomMessage(bot, chatId);
+    } else if (text === continueTranslating) {
+        await bot.sendMessage(chatId, guide);
+        userStates.set(chatId, {isRequestingTranslate: true, lastText: userState.lastText});
     } else if (text.startsWith('/start')) {
         console.log("this is id " + msg.from.id);
         console.log(msg.text)
@@ -132,7 +177,7 @@ bot.on('message', async (msg) => {
             bot.sendMessage(chatId, channelJoin, {
                 reply_markup: {
                     keyboard: [
-                        [{text: joined[0]}]
+                        [{text: joined[2]}]
                     ],
                     resize_keyboard: true,
                     one_time_keyboard: true
@@ -165,7 +210,7 @@ bot.on('message', async (msg) => {
             lastText: ""
         });
 
-    } else if (text === joined[0]) {
+    } else if (text === joined[2]) {
         console.log("this is id " + msg.from.id);
         // Check if the user is a member of the channel
         let isMember = await checkChannelMembership(chatId, msg.from.id);
@@ -196,7 +241,7 @@ bot.on('message', async (msg) => {
             bot.sendMessage(chatId, channelJoin, {
                 reply_markup: {
                     keyboard: [
-                        [{text: joined[0]}]
+                        [{text: joined[2]}]
                     ],
                     resize_keyboard: true,
                     one_time_keyboard: true
@@ -205,23 +250,70 @@ bot.on('message', async (msg) => {
         }
     }
 
-    if (text === translator[0]) {
+    if (text === translator[2]) {
         console.log("its in here");
-        userStates.set(chatId, {isRequestingTranslate: true});
-    } else if (text === mainMenu[0]) {
+        await bot.sendMessage(chatId, promoteUs[2], {
+            reply_markup: {
+                keyboard: [
+                    [{text: destinationLanguage[0]}],
+                    [{text: destinationLanguage[1]}],
+                    [{text: destinationLanguage[2]}],
+                    [{text: destinationLanguage[3]}],
+                    [{text: destinationLanguage[4]}],
+                    [{text: destinationLanguage[5]}],
+                    [{text: destinationLanguage[6]}],
+                    [{text: destinationLanguage[7]}],
+                    [{text: destinationLanguage[8]}],
+                    [{text: destinationLanguage[9]}],
+                    [{text: destinationLanguage[10]}],
+                ],
+                resize_keyboard: true,
+                one_time_keyboard: true
+            }
+        });
+        // userStates.set(chatId, {isRequestingTranslate: true});
+    } else if (text === destinationLanguage[0] || text === destinationLanguage[1] || text === destinationLanguage[2] || text === destinationLanguage[3] || text === destinationLanguage[4] || text === destinationLanguage[1] || text === destinationLanguage[5] || text === destinationLanguage[6] || text === destinationLanguage[7] || text === destinationLanguage[8] || text === destinationLanguage[9] || text === destinationLanguage[10]) {
+        await userStates.set(chatId, {isRequestingTranslate: true, lastText: text});
+        console.log(userState);
+        console.log('=================');
+        console.log(text);
+        await bot.sendMessage(chatId, guide);
+    } else if (text === mainMenu[2]) {
         userStates.set(chatId, {...userState, lastText: ""});
         await sendCustomMessage(bot, chatId);
     } else {
     }
 });
 
+
+bot.on('callback_query', (callbackQuery) => {
+    const message = callbackQuery.message;
+    const chatId = message.chat.id;
+    const data = callbackQuery.data;
+
+    // Handle language selection
+    if (data.startsWith('set_language_')) {
+        const selectedLanguage = data.split('_')[2];
+        let userState = userStates.get(chatId);
+        if (selectedLanguage === 'english' || selectedLanguage === 'persian') {
+            userState.preferLanguage = selectedLanguage;
+            console.log(userState);
+            bot.sendMessage(chatId, `Language set to ${selectedLanguage}. ${mainMenu[selectedLanguage === 'english' ? 1 : 0]}`);
+
+        }
+    }
+
+    // Additional callback query handling if needed
+});
+
+
 async function sendCustomMessage(bot, chatId) {
-    await bot.sendMessage(chatId, promoteUs[0], {
+    await bot.sendMessage(chatId, promoteUs[2], {
         reply_markup: {
             keyboard: [
-                [{text: translator[0]}],
-                [{text: userProfile[0]}],
-                [{text: aboutUs[0]}]
+                [{text: translator[2]}],
+                [{text: userProfile[2]}],
+                [{text: aboutUs[2]}]
             ],
             resize_keyboard: true,
             one_time_keyboard: true
