@@ -75,7 +75,7 @@ bot.on('message', async (msg) => {
                         formData.append('destination', destLang + "");
 
                         // Send the file to your server
-                        axios.post('http://localhost:3000/audioToAnyTest', formData, {
+                        axios.post('http://localhost:3001/audioToAnyTest', formData, {
                             headers: formData.getHeaders()
                         })
                             .then((res) => {
@@ -147,7 +147,7 @@ bot.on('message', async (msg) => {
             // Handle the referral logic here
             console.log(`User ${username || name} was referred by ${referralId}`);
             try {
-                await axios.post('http://localhost:3000/invite', {
+                await axios.post('http://localhost:3001/invite', {
                     idChatInvitePerson: referralId,
                     idChatGuest: msg.from.id
                 });
@@ -163,7 +163,7 @@ bot.on('message', async (msg) => {
         if (!(isMember && isMember2)) {
             console.log("should be here");
             try {
-                await axios.post('http://localhost:3000/start', {
+                await axios.post('http://localhost:3001/start', {
                     username: username,
                     name: name,
                     surName: surName,
@@ -186,7 +186,7 @@ bot.on('message', async (msg) => {
         } else {
             console.log("is it in else ?");
             try {
-                await axios.post('http://localhost:3000/start', {
+                await axios.post('http://localhost:3001/start', {
                     username: username,
                     name: name,
                     surName: surName,
@@ -218,7 +218,7 @@ bot.on('message', async (msg) => {
         if (isMember && isMember2) {
 
             try {
-                await axios.post('http://localhost:3000/start', {
+                await axios.post('http://localhost:3001/start', {
                     username: username,
                     name: name,
                     surName: surName,
