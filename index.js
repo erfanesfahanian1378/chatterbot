@@ -9,9 +9,14 @@ const channelUsername2 = '@ProteinTeam';
 const joined = ['عضو شدم', 'i joined', 'عضو شدم | i joined'];
 let mainMenu = ['منو اصلی', 'main menu', 'منو اصلی | main menu'];
 let guide = "متن مورد نظر خود را به هر زبانی که مسلط هستید به صورت صوتی بیان کنید | speak what you want to translate in any language you want"
-let translator = ['ترجمه میکنم برات تو فقط بهم ویس بده به هر زبونی که میخوای و زبان مقصدت و انتخاب کن', 'translate with audio in any language', "ترجمه صوتی به صوتی | translate audio to audio"];
+let translator = ['ترجمه میکنم برات تو فقط بهم ویس بده به هر زبونی که میخوای و زبان مقصدت و انتخاب کن', 'translate with audio in any language', "ترجمه صوتی به صوتی 🎙|🎙 translate voice to voice"];
 let userProfile = ['حساب کاربری شما📖✏️', 'your profile 📖✏️', 'حساب کاربری شما📖✏️ | your profile 📖✏'];
 let aboutUs = ['درباره ما', 'about us', 'درباره ما | about us'];
+let aboutUsText = `
+ما در پروتئین، یک تیم پویا و نوآور در عرصه هوش مصنوعی هستیم. 🚀👨‍💻👩‍💻 با ارائه خدمات و سرویس‌های متنوع و خلاقانه، 🌟🛠️ می‌کوشیم تا دسترسی عموم جامعه به ابزارهای پیشرفته هوش مصنوعی را فراهم آوریم. هدف ما، تسهیل فعالیت‌های حرفه‌ای افراد شاغل از طریق به کارگیری قدرت هوش مصنوعی است. 💡🤖💼 ما بر این باوریم که هر فردی باید بتواند از مزایای این فناوری شگفت‌انگیز به نفع خود و جامعه‌اش بهره ببرد. 🌍❤️ با ما همراه باشید تا با هم آینده‌ای روشن‌تر و هوشمندتر بسازیم. 🌈🛠️🔮
+
+At Protein, we are a dynamic and innovative team in the field of AI. 🚀👨‍💻👩‍💻 Offering a variety of creative services and solutions, 🌟🛠️ we strive to provide the public access to advanced AI tools. Our goal is to facilitate professional activities for working individuals by leveraging the power of AI. 💡🤖💼 We believe that everyone should have the opportunity to benefit from the wonders of this incredible technology for their own and societal good. 🌍❤️ Join us in building a brighter and smarter future together. 🌈🛠️🔮
+`;
 let destinationLanguage = ['English', 'Spanish', 'Italian', 'German', 'Persian', 'Arabic', 'Chinese', 'Japanese', 'Korean', 'French', 'Russian', 'Turkey', 'Hindi'];
 let continueTranslating = "ادامه ترجمه | continue translating"
 let askToContinue = "آیا میخواهید ترجمه ادامه پیدا کند ؟ | do you want to continue translating "
@@ -23,12 +28,28 @@ let promoteUs = ["با معرفی ما به دوستان خود از ما حما
 let channelJoin = `لطفا ابتدا عضو کانال‌های ${channelUsername} و ${channelUsername2} شوید.`;
 let changeTone = 'تغییر لحن متن👅 | 👅change tone of the text';
 let changeTonerOption = ['متن نهایی که میخواهید فارسی است', 'The goal text is english'];
-let changeTonerOptionPersian = ["عاشقانه", "رسمی", "داش مشتی", "ایمیلی", "ساده و خلاصه کن"];
+let changeTonerOptionPersian = ["عاشقانه", "رسمی", "دوستانه", "ایمیلی", "ساده و خلاصه کن", "شعرش کن"];
 let changeTonerOptionEnglish = ["Romantic", "Formal", "Slang", "Email Format", "Simplify and summarize"]
 let whatTonePersian = "لحن متن شما به چه صورت باشد"
 let whatToneEnglish = 'What should be the tone of your text?'
 let askForChangeTheTone = "متن شما به چه زبانی است. | what's the language of your text";
 let changeVoiceToText = 'ویسم را به متن تبدیل کن🗣📝 | 🗣📝Voice to text generator';
+const beforeVoice =`
+✨دیگه اصلا حوصله نوشتن نیست. 😩میخوای تا با یک چشم بهم زدن حرفات رو تبدیل به متن کنم؟🙃 وویس بگیر برام ارسال کن تا ببین چیکارا که نمی کنم برات🤩🔥
+
+✨Feeling a bit worn out from writing, huh? 😩 How about I turn your thoughts into text with just a wink? 🙃 Shoot me a voice message, and let's see what magic I can conjure up for you! 🤩🔥
+`;
+
+const beforeUse = `
+
+✨اگه زبان بلد نیستی دیگه نگران نباش،😌 این قابلیت در ربات درگوشی  وجود داره که بعد از انتخاب زبان مورد علاقه ات، به راحتی برای  وویس بگیری و  خیلی سریع، اون رو به 13 زبان دیگر  با لحن طبیعی ترجمه میکنم و  وویسش رو میفرستم. یه چیز خفن که ربات داره اینه که در هر بار استفاده مهم نیست  با چه زبونی حرف میزنی، من هوشمندم و تشخیص میدم با چه زبونی صحبت کردی🔉🎤
+
+⚠️⚠️ برای کار با من بعد از انتخاب زبان  برام وویست رو با هر زبانی که دوست داری بفرست😎
+
+✨If you're not fluent in a language, don't worry anymore😌.  Your phone's bot has got your back😎. it allows you to easily record your voice after selecting your preferred language, and I'll quickly translate it into 13 other languages with a more natural tone and send you the voice message. One awesome feature about the robot is that it doesn't matter which language you use each time; I'm clever enough to figure out what language you're speaking!📣
+
+⚠️⚠️ After selecting the language, feel free to send me your voice message in any language you prefer for working with me. 😎
+`;
 
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
@@ -208,6 +229,7 @@ bot.on('message', async (msg) => {
                     [{text: changeTonerOptionPersian[2]}],
                     [{text: changeTonerOptionPersian[3]}],
                     [{text: changeTonerOptionPersian[4]}],
+                    [{text: changeTonerOptionPersian[5]}],
                     [{text: mainMenu[2]}]
                 ],
                 resize_keyboard: true,
@@ -268,7 +290,7 @@ bot.on('message', async (msg) => {
                 console.error('Error sending data to server:', error);
             });
         await userStates.set(chatId, {isRequestingChangingTone: false, tone: ""});
-    } else if (text === changeTonerOptionPersian[0] || text === changeTonerOptionPersian[1] || text === changeTonerOptionPersian[2] || text === changeTonerOptionPersian[3] || text === changeTonerOptionPersian[4]) {
+    } else if (text === changeTonerOptionPersian[0] || text === changeTonerOptionPersian[1] || text === changeTonerOptionPersian[2] || text === changeTonerOptionPersian[3] || text === changeTonerOptionPersian[4] || text === changeTonerOptionPersian[5]) {
         console.log("in to miaeeee");
         await userStates.set(chatId, {isRequestingChangingTone: true, tone: text});
         userState.isRequestingChangingTone = true;
@@ -279,10 +301,27 @@ bot.on('message', async (msg) => {
         userState.isRequestingChangingToneEnglish = true;
         await console.log(userState.isRequestingChangingToneEnglish);
     } else if (text === changeVoiceToText) {
+        // await bot.sendMessage(chatId, beforeVoice);
+
+        await bot.sendMessage(chatId, beforeVoice, {
+            reply_markup: {
+                keyboard: [
+                    [{text: mainMenu[2]}],
+                ],
+                resize_keyboard: true,
+                one_time_keyboard: true
+            }
+        });
+
         userStates.set(chatId, {isChangingVoiceToText: true});
+
     } else if (text === continueTranslating) {
         await bot.sendMessage(chatId, guide);
         userStates.set(chatId, {isRequestingTranslate: true, lastText: userState.lastText});
+    } else if (text === aboutUs[2]) {
+        // aboutUsText
+        await bot.sendMessage(chatId, aboutUsText);
+       await sendCustomMessage(bot,chatId)
     } else if (text.startsWith('/start')) {
         console.log("this is id " + msg.from.id);
         console.log(msg.text);
@@ -401,7 +440,7 @@ bot.on('message', async (msg) => {
 
     if (text === translator[2]) {
         console.log("its in here");
-        await bot.sendMessage(chatId, promoteUs[2], {
+        await bot.sendMessage(chatId, beforeUse, {
             reply_markup: {
                 keyboard: [
                     [{text: destinationLanguage[0]}],
@@ -458,7 +497,7 @@ bot.on('message', async (msg) => {
             ...userState,
             lastText: "",
             isRequestingTranslate: false,
-            isChangingVoiceToText: false
+            isChangingVoiceToText: false,
         });
         await sendCustomMessage(bot, chatId);
     } else {
@@ -494,7 +533,6 @@ async function sendCustomMessage(bot, chatId) {
                 [{text: translator[2]}],
                 [{text: changeVoiceToText}],
                 [{text: changeTone}],
-                [{text: userProfile[2]}],
                 [{text: aboutUs[2]}]
             ],
             resize_keyboard: true,
